@@ -78,9 +78,18 @@
                                     <constraint firstItem="sC6-46-dUB" firstAttribute="leading" secondItem="qNP-nY-fDm" secondAttribute="leading" constant="8" id="lxg-yx-cFE"/>
                                 </constraints>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="eJ7-qZ-1bL">
+                                <rect key="frame" x="295" y="567" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="4Yo-uZ-aeI"/>
+                                    <constraint firstAttribute="width" constant="40" id="7Rh-WK-0DM"/>
+                                </constraints>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="eJ7-qZ-1bL" firstAttribute="centerY" secondItem="Q2P-Ga-hkD" secondAttribute="centerY" id="2Rn-y2-Asg"/>
+                            <constraint firstItem="eJ7-qZ-1bL" firstAttribute="centerX" secondItem="Q2P-Ga-hkD" secondAttribute="centerX" id="663-8q-JCR"/>
                             <constraint firstItem="qNP-nY-fDm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="30" id="DMz-N5-7hI"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="qNP-nY-fDm" secondAttribute="trailing" constant="20" id="KIv-ya-aHU"/>
                             <constraint firstItem="gU4-If-F3r" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="PiP-A7-JLu"/>
@@ -96,6 +105,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="eJ7-qZ-1bL" id="xbQ-aV-d8g"/>
                         <outlet property="answerView" destination="qNP-nY-fDm" id="8Ja-GS-zZE"/>
                         <outlet property="cameraView" destination="gU4-If-F3r" id="Sm8-vM-07i"/>
                         <outlet property="captureImage" destination="Q2P-Ga-hkD" id="Rna-9d-Ehp"/>

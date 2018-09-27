@@ -20,12 +20,15 @@ class CameraVC: UIViewController {
     var photoData: Data?
     var flashUsed: Bool!
     
+    var speechSynthesizer = AVSpeechSynthesizer()
+    
     @IBOutlet weak var cameraView: UIView!
     @IBOutlet weak var captureImage: RoundedShadowImageView!
     @IBOutlet weak var flashBtn: RoundedShadowButton!
     @IBOutlet weak var itemsNameLbl: UILabel!
     @IBOutlet weak var confidenceLbl: UILabel!
     @IBOutlet weak var answerView: RoundedShadowView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     // Hide Status Bar
     override var prefersStatusBarHidden: Bool {
@@ -39,6 +42,10 @@ class CameraVC: UIViewController {
         
         flashUsed = false
         flashBtn.setTitle("FLASH ON", for: .normal)
+        // and show spinner
+        self.activityIndicator.isHidden = true
+        
+        speechSynthesizer.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,12 +76,16 @@ class CameraVC: UIViewController {
                 cameraView.layer.addSublayer(previewLayer!)
                 cameraView.addGestureRecognizer(tap)
                 captureSession.startRunning()
-                
             }
             
         } catch {
             debugPrint(error)
         }
+    }
+    
+    func synthesizeSpeech(fromString string: String) {
+        let speechUtterance = AVSpeechUtterance(string: string)
+        speechSynthesizer.speak(speechUtterance)
     }
     
     @IBAction func flashBtnTapped(_ sender: Any) {
@@ -87,6 +98,12 @@ class CameraVC: UIViewController {
     }
     
     @objc func didTapCameraView() {
+        // Disactivated buttons
+        self.cameraView.isUserInteractionEnabled = false
+        // and show spinner
+        self.activityIndicator.isHidden = false
+        self.activityIndicator.startAnimating()
+        
         let settings = AVCapturePhotoSettings()
         let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
         let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType, kCVPixelBufferWidthKey as String: 160, kCVPixelBufferHeightKey as String: 160]
@@ -109,13 +126,20 @@ class CameraVC: UIViewController {
         
         for classification in results {
             if classification.confidence < 0.5 {
-                self.itemsNameLbl.text = "I'm not sure what this is.\nPlease try again."
+                let unknownObjectMessage = "Objet non reconnu. Merci de réessayer."
+                self.itemsNameLbl.text = unknownObjectMessage
+                synthesizeSpeech(fromString: unknownObjectMessage)
                 self.confidenceLbl.isHidden = true
                 break
             } else {
-                self.itemsNameLbl.text = classification.identifier
+                let identification = classification.identifier
+                self.itemsNameLbl.text = identification
+                synthesizeSpeech(fromString: identification)
+                
+                let confidence = "CONFIDENCE: " + String(Int(classification.confidence * 100)) + "%"
                 self.confidenceLbl.isHidden = false
-                self.confidenceLbl.text = "CONFIDENCE: " + String(Int(classification.confidence * 100)) + "%"
+                self.confidenceLbl.text = confidence
+                synthesizeSpeech(fromString: confidence)
                 break
             }
         }
@@ -148,4 +172,12 @@ extension CameraVC: AVCapturePhotoCaptureDelegate {
     }
 }
 
-
+extension CameraVC: AVSpeechSynthesizerDelegate {
+    // Finished talking
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        // Disactivated buttons
+        self.cameraView.isUserInteractionEnabled = true
+        // and show spinner
+        self.activityIndicator.isHidden = true
+        self.activityIndicator.stopAnimating()
+    }}
