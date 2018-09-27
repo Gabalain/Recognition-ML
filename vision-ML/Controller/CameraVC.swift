@@ -105,8 +105,8 @@ class CameraVC: UIViewController {
         self.activityIndicator.startAnimating()
         
         let settings = AVCapturePhotoSettings()
-        let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
-        let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType, kCVPixelBufferWidthKey as String: 160, kCVPixelBufferHeightKey as String: 160]
+//        let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
+//        let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType, kCVPixelBufferWidthKey as String: 160, kCVPixelBufferHeightKey as String: 160]
         let previewFormatNew = settings.embeddedThumbnailPhotoFormat
         
         settings.previewPhotoFormat = previewFormatNew
